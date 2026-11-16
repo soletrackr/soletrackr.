@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="SoleTrackr smart insoles measure pressure, motion and heart rate from inside your shoe. Demo store.">
+<meta name="description" content="SoleTrackr custom smart insoles for Nike, adidas, ASICS and Puma shoes. Demo store, prices in AUD.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <title>SoleTrackr</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
@@ -184,8 +184,10 @@ dl.spec dt:last-of-type,dl.spec dd:last-of-type{border-bottom:0}
 .sizes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;border:0;padding:0;margin:0}
 .size{position:relative}
 .size input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0}
-.size label{display:grid;place-items:center;height:50px;border-radius:25px;background:var(--card);cursor:pointer;font:600 16px var(--font-display)}
+.size label{display:grid;place-items:center;align-content:center;height:60px;border-radius:30px;background:var(--card);cursor:pointer;font:600 17px/1.15 var(--font-display)}
+.size label small{font:500 11px var(--font-body);color:var(--sub)}
 .size input:checked + label{background:var(--accent);color:var(--bg)}
+.size input:checked + label small{color:var(--bg)}
 .size input:focus-visible + label{outline:2px solid var(--accent);outline-offset:3px}
 .buyrow{display:flex;gap:12px}
 .qty{display:flex;align-items:center;background:var(--card);border-radius:28px;height:56px}
@@ -212,6 +214,11 @@ footer{border-top:1px solid var(--line)}
 footer .wrap{display:flex;flex-wrap:wrap;gap:12px 40px;justify-content:space-between;padding-block:36px 56px;color:var(--sub);font-size:14px}
 footer p{max-width:58ch}
 
+.brands{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.brands .card{display:flex;flex-direction:column;justify-content:space-between;gap:28px;min-height:150px}
+.brands b{font:700 36px/1 var(--font-display);letter-spacing:-.03em}
+.brands span{font-size:14px;font-weight:600;color:var(--accent)}
+@media(max-width:800px){.brands{grid-template-columns:repeat(2,minmax(0,1fr))}}
 /* cart */
 .scrim{position:fixed;inset:0;background:rgba(5,8,12,.6);z-index:60}
 .drawer{position:fixed;top:0;right:0;bottom:0;z-index:70;width:min(440px,100%);background:var(--bg);border-left:1px solid var(--line);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-right:env(safe-area-inset-right,0px)}
@@ -279,7 +286,7 @@ img{max-width:100%}
       SoleTrackr
     </a>
     <nav class="nav" aria-label="Sections">
-      <a href="#why">Why insoles</a><a href="#app">The app</a><a href="#hardware">Hardware</a><a href="#shop">Shop</a><a href="#faq">FAQ</a>
+      <a href="#why">Why insoles</a><a href="#app">The app</a><a href="#hardware">Hardware</a><a href="#fits">Fits</a><a href="#shop">Shop</a><a href="#faq">FAQ</a>
     </nav>
     <button class="cartbtn" id="openCart" aria-haspopup="dialog">Cart <span class="n" id="cartN" aria-live="polite">0</span></button>
   </div>
@@ -292,10 +299,10 @@ img{max-width:100%}
       <h1>Fitness tracking, from the ground up.</h1>
       <p class="lede">SoleTrackr insoles measure pressure, motion and heart rate from inside your shoe, so you see how you move and not just how far.</p>
       <div class="cta">
-        <a class="btn" href="#shop">Shop from $106.99</a>
+        <a class="btn" href="#shop">Shop from $106.99 AUD</a>
         <a class="btn soft" href="#app">See the app</a>
       </div>
-      <div class="facts"><span><b>US 6–13</b> sizes</span><span><b>30-day</b> returns</span><span>Free shipping over <b>$150</b></span></div>
+      <div class="facts"><span><b>Nike, adidas, ASICS, Puma</b> compatible</span><span><b>30-day</b> returns</span><span>Free shipping over <b>$150 AUD</b></span></div>
     </div>
     <div>
       <div class="stage">
@@ -496,7 +503,7 @@ img{max-width:100%}
   <div class="wrap sec">
     <div class="sec-head">
       <h2>A thin insole and a pod the size of a lighter.</h2>
-      <p>The insole goes under your shoe's own liner. The pod clips into the arch, where your foot presses least.</p>
+      <p>The insole replaces your shoe's own liner. The pod clips into the arch, where your foot presses least.</p>
     </div>
     <div class="hw">
       <div class="card fig">
@@ -536,8 +543,8 @@ img{max-width:100%}
       </div>
       <ol class="parts">
         <li><span class="k">1</span><div><b>The pod</b><span>Pressure hub, motion sensor and heart-rate window in one 9 g capsule. Charges over USB-C.</span></div></li>
-        <li><span class="k">2</span><div><b>The insole</b><span>Pressure zones printed into a flexible 3 mm layer. Trim along the lines for your size.</span></div></li>
-        <li><span class="k">3</span><div><b>Your shoe</b><span>Any trainer or boot with a removable liner. Nothing to swap.</span></div></li>
+        <li><span class="k">2</span><div><b>The insole</b><span>Made to your size from a flexible 3 mm layer, with the pressure zones built in.</span></div></li>
+        <li><span class="k">3</span><div><b>Your shoe</b><span>Nike, adidas, ASICS and Puma shoes. It sits in place of the factory liner.</span></div></li>
       </ol>
     </div>
     <div class="pod">
@@ -577,11 +584,27 @@ img{max-width:100%}
   </div>
 </section>
 
-<section id="shop">
+<section id="fits">
+  <div class="wrap sec">
+    <div class="sec-head">
+      <h2>Made for the shoes you already own.</h2>
+      <p>Every SoleTrackr insole is made to your size and works in Nike, adidas, ASICS and Puma shoes. Your size sets the price, never the fit.</p>
+    </div>
+    <div class="brands">
+      <div class="card"><b>Nike</b><span>Compatible in every size</span></div>
+      <div class="card"><b>adidas</b><span>Compatible in every size</span></div>
+      <div class="card"><b>ASICS</b><span>Compatible in every size</span></div>
+      <div class="card"><b>Puma</b><span>Compatible in every size</span></div>
+    </div>
+    <p class="note">SoleTrackr is not affiliated with or endorsed by Nike, adidas, ASICS or Puma. Brand names are used only to say which shoes the insoles work in.</p>
+  </div>
+</section>
+
+<section id="shop" class="alt">
   <div class="wrap sec">
     <div class="sec-head">
       <h2>Choose your pair.</h2>
-      <p>Each pair is a left and right insole, two pods and a charging cable. The app is free.</p>
+      <p>Each pair is a custom left and right insole made to your size, with two pods and a charging cable. The app is free.</p>
     </div>
     <div class="shop">
       <div class="card preview">
@@ -590,45 +613,45 @@ img{max-width:100%}
       </div>
       <div>
         <div class="field">
-          <div class="lab"><b>Model</b><span>Prices in USD</span></div>
+          <div class="lab"><b>Model</b><span>Prices in AUD</span></div>
           <fieldset class="models" id="models"><legend style="position:absolute;left:-9999px">Model</legend></fieldset>
         </div>
         <div class="field">
-          <div class="lab"><b>Shoe size</b><span>US</span></div>
+          <div class="lab"><b>Your size</b><span>US sizes · size sets the price</span></div>
           <fieldset class="sizes" id="sizes"><legend style="position:absolute;left:-9999px">Shoe size</legend></fieldset>
-          <p class="sub" style="font-size:13px;margin-top:10px">Between sizes? Take the larger one and trim along the printed line. You can set your size in the app too.</p>
+          <p class="sub" style="font-size:13px;margin-top:10px">Between sizes? Choose the larger one. Every size works in Nike, adidas, ASICS and Puma shoes.</p>
         </div>
         <div class="buyrow">
           <div class="qty" role="group" aria-label="Quantity"><button type="button" id="qMinus" aria-label="Fewer">−</button><output id="qVal" aria-live="polite">1</output><button type="button" id="qPlus" aria-label="More">+</button></div>
           <button class="btn" id="addBtn" type="button">Add to cart · <span id="addPrice">$149.99</span></button>
         </div>
-        <ul class="incl"><li>Left and right insole</li><li>Two pods, USB-C cable</li><li>30-day returns</li><li>Ships in 2 business days</li></ul>
+        <ul class="incl"><li>Made-to-order pair</li><li>Two pods, USB-C cable</li><li>30-day returns</li><li>Ships in 5 business days</li></ul>
       </div>
     </div>
   </div>
 </section>
 
-<section class="alt">
+<section>
   <div class="wrap sec">
     <div class="sec-head"><h2>Out of the box in five minutes.</h2></div>
     <div class="steps">
-      <div class="card"><b>Trim and slide in</b><span>Cut along the line for your size, then lay each insole under the liner of your shoe.</span></div>
-      <div class="card"><b>Clip in the pods</b><span>Each pod snaps into the arch. Open the app and it finds both sides on its own.</span></div>
+      <div class="card"><b>Choose your size</b><span>Pick your US size and we make your insoles to fit. They work in Nike, adidas, ASICS and Puma shoes.</span></div>
+      <div class="card"><b>Fit and clip in</b><span>Swap your shoe's liner for the insole, then snap a pod into each arch. Open the app and it finds both sides on its own.</span></div>
       <div class="card"><b>Go for a walk</b><span>Come back to Today and Gait to see how your weight moved.</span></div>
     </div>
   </div>
 </section>
 
-<section id="faq">
+<section id="faq" class="alt">
   <div class="wrap sec">
     <div class="sec-head"><h2>Good questions.</h2></div>
     <div class="faq">
-      <details><summary>Will they fit my shoes?</summary><p>They fit most trainers, walking shoes and boots that have a removable liner. Trace the liner, trim along the printed line for your size and slide them in under it.</p></details>
+      <details><summary>Which shoes do they work in?</summary><p>Nike, adidas, ASICS and Puma. Each pair is made to the size you choose and works in all four brands. Your size changes the price, not the compatibility.</p></details>
       <details><summary>Do I need my phone with me?</summary><p>No. The pods keep up to a day of steps and sync the next time the app is open nearby.</p></details>
       <details><summary>Can I use it with my watch?</summary><p>Yes. SoleTrackr tracks on its own and does not need a watch, but the two do not get in each other's way.</p></details>
       <details><summary>Is this a medical device?</summary><p>No. SoleTrackr shows how you load your feet and does not diagnose anything. If you have pain, see a podiatrist. The Pro export is made to share with one.</p></details>
       <details><summary>Can I wear them in the rain?</summary><p>Yes. The pods are rated IP67, so sweat, puddles and a quick splash are fine. Please do not swim in them.</p></details>
-      <details><summary>What if they do not suit me?</summary><p>Send them back within 30 days for a full refund. Trimmed pairs are fine.</p></details>
+      <details><summary>What if they do not suit me?</summary><p>Send them back within 30 days for a refund if they do not suit you.</p></details>
     </div>
   </div>
 </section>
@@ -787,6 +810,8 @@ img{max-width:100%}
     pro:{name:'Pro',price:249.99,idx:[0,1,2,3,4,5,6,7,8,9,10,11],desc:'Twelve zones, every sensor and raw CSV data export.',tags:['12 zones','Heart rate','Terrain','CSV export','7 days']}
   };
   var SIZES=['6','7','8','9','10','11','12','13'];
+  function sizeAdd(z){var n=+z;return n<=7?0:n<=9?10:n<=11?20:30}
+  function unit(model,size){return MODELS[model].price+sizeAdd(size)}
   var FREE_AT=150, SHIP=9.9;
   var POD='<g transform="translate(119 332)"><rect x="-19" y="-34" width="38" height="68" rx="15" fill="#16191D" stroke="#3A424D" stroke-width="1.5"/><rect x="-15" y="-30" width="30" height="14" rx="7" fill="#232930"/><circle cx="0" cy="20" r="5" fill="none" stroke="var(--accent)" stroke-width="2"/><circle cx="0" cy="20" r="1.8" fill="var(--accent)"/></g>';
   function insoleMap(idx,withPod){
@@ -796,19 +821,20 @@ img{max-width:100%}
   }
   var st={model:'run',size:'9',qty:1}, cart=[], view='cart', lastOrder=null, lastFocus=null;
   $('models').insertAdjacentHTML('beforeend',Object.keys(MODELS).map(function(k){var o=MODELS[k];
-    return '<div class="model"><input type="radio" name="model" id="m_'+k+'" value="'+k+'"'+(k===st.model?' checked':'')+'><label for="m_'+k+'"><span class="nm">'+o.name+'</span><span class="pr">'+money(o.price)+'</span><span class="ds">'+o.desc+'</span><span class="tag">'+o.tags.map(function(t){return '<span>'+t+'</span>'}).join('')+'</span></label></div>';
+    return '<div class="model"><input type="radio" name="model" id="m_'+k+'" value="'+k+'"'+(k===st.model?' checked':'')+'><label for="m_'+k+'"><span class="nm">'+o.name+'</span><span class="pr" id="pr_'+k+'">'+money(unit(k,st.size))+'</span><span class="ds">'+o.desc+'</span><span class="tag">'+o.tags.map(function(t){return '<span>'+t+'</span>'}).join('')+'</span></label></div>';
   }).join(''));
-  $('sizes').insertAdjacentHTML('beforeend',SIZES.map(function(z){return '<div class="size"><input type="radio" name="size" id="s_'+z+'" value="'+z+'"'+(z===st.size?' checked':'')+'><label for="s_'+z+'">'+z+'</label></div>'}).join(''));
+  $('sizes').insertAdjacentHTML('beforeend',SIZES.map(function(z){return '<div class="size"><input type="radio" name="size" id="s_'+z+'" value="'+z+'"'+(z===st.size?' checked':'')+'><label for="s_'+z+'">'+z+'<small>'+(sizeAdd(z)?'+$'+sizeAdd(z):'Base')+'</small></label></div>'}).join(''));
   function paintShop(){
     var o=MODELS[st.model];
     $('shopSvg').innerHTML=insoleMap(o.idx,true);
     $('pvName').textContent=o.name;
     $('pvSens').textContent=o.idx.length+' pressure zones';
     $('qVal').textContent=st.qty;
-    $('addPrice').textContent=money(o.price*st.qty);
+    $('addPrice').textContent=money(unit(st.model,st.size)*st.qty);
+    Object.keys(MODELS).forEach(function(k){$('pr_'+k).textContent=money(unit(k,st.size))});
   }
   $('models').addEventListener('change',function(e){st.model=e.target.value;paintShop()});
-  $('sizes').addEventListener('change',function(e){st.size=e.target.value});
+  $('sizes').addEventListener('change',function(e){st.size=e.target.value;paintShop()});
   $('qMinus').addEventListener('click',function(){st.qty=Math.max(1,st.qty-1);paintShop()});
   $('qPlus').addEventListener('click',function(){st.qty=Math.min(9,st.qty+1);paintShop()});
   $('addBtn').addEventListener('click',function(){
@@ -820,7 +846,7 @@ img{max-width:100%}
 
   /* ---------- cart ---------- */
   function totals(){
-    var sub=cart.reduce(function(a,c){return a+MODELS[c.model].price*c.qty},0);
+    var sub=cart.reduce(function(a,c){return a+unit(c.model,c.size)*c.qty},0);
     var ship=sub===0?0:(sub>=FREE_AT?0:SHIP);
     return {sub:sub,ship:ship,total:sub+ship,n:cart.reduce(function(a,c){return a+c.qty},0)};
   }
@@ -838,10 +864,10 @@ img{max-width:100%}
       var pct=Math.min(100,t.sub/FREE_AT*100);
       var h='<div class="ship"><span>'+(t.sub>=FREE_AT?'You have free shipping.':'Add '+money(FREE_AT-t.sub)+' for free shipping.')+'</span><div class="track"><i style="width:'+pct+'%"></i></div></div>';
       cart.forEach(function(c,i){var o=MODELS[c.model];
-        h+='<div class="line"><div class="thumb">'+thumb(o.idx)+'</div><div class="t"><b>SoleTrackr '+o.name+'</b><span>Size US '+c.size+'</span><div><span class="mini"><button type="button" data-act="dec" data-i="'+i+'" aria-label="Fewer">−</button><output>'+c.qty+'</output><button type="button" data-act="inc" data-i="'+i+'" aria-label="More">+</button></span><button class="rm" type="button" data-act="rm" data-i="'+i+'">Remove</button></div></div><div class="pp">'+money(o.price*c.qty)+'</div></div>';
+        h+='<div class="line"><div class="thumb">'+thumb(o.idx)+'</div><div class="t"><b>SoleTrackr '+o.name+'</b><span>Size US '+c.size+'</span><div><span class="mini"><button type="button" data-act="dec" data-i="'+i+'" aria-label="Fewer">−</button><output>'+c.qty+'</output><button type="button" data-act="inc" data-i="'+i+'" aria-label="More">+</button></span><button class="rm" type="button" data-act="rm" data-i="'+i+'">Remove</button></div></div><div class="pp">'+money(unit(c.model,c.size)*c.qty)+'</div></div>';
       });
       body.innerHTML=h;
-      foot.innerHTML='<div class="sumrow"><span>Subtotal</span><span>'+money(t.sub)+'</span></div><div class="sumrow"><span>Shipping</span><span>'+(t.ship?money(t.ship):'Free')+'</span></div><div class="sumrow total"><span>Total</span><span>'+money(t.total)+'</span></div><button class="btn block" data-act="checkout" type="button">Checkout</button><p class="demo">Demo store. No payment is taken.</p>';
+      foot.innerHTML='<div class="sumrow"><span>Subtotal</span><span>'+money(t.sub)+'</span></div><div class="sumrow"><span>Shipping</span><span>'+(t.ship?money(t.ship):'Free')+'</span></div><div class="sumrow total"><span>Total</span><span>'+money(t.total)+'</span></div><button class="btn block" data-act="checkout" type="button">Checkout</button><p class="demo">Demo store. All prices in AUD. No payment is taken.</p>';
     } else if(view==='checkout'){
       $('drTitle').textContent='Checkout';
       body.innerHTML='<form class="form" id="coForm" novalidate><label>Full name<input id="f_name" autocomplete="name" placeholder="Alex Morgan"></label><label>Email<input id="f_email" type="email" autocomplete="email" placeholder="alex@example.com"></label><label>Street address<input id="f_addr" autocomplete="street-address" placeholder="12 Example Street"></label><div class="two"><label>City<input id="f_city" placeholder="Melbourne"></label><label>Postcode<input id="f_pc" inputmode="numeric" placeholder="3000"></label></div><label>Country<select id="f_cty"><option>Australia</option><option>New Zealand</option><option>United States</option><option>United Kingdom</option><option>Canada</option></select></label><p class="demo" id="coErr" role="alert" style="color:var(--accent);text-align:left;min-height:1em"></p></form>';
@@ -888,7 +914,7 @@ img{max-width:100%}
       if(!ok){err.textContent='Fill in the highlighted fields. The email needs an @.';return}
       var t=totals();
       lastOrder={no:'ST-'+(10000+Math.floor(Math.random()*89999)),first:$('f_name').value.trim().split(' ')[0],email:$('f_email').value.trim(),ship:t.ship,total:t.total,
-        items:cart.map(function(c){return {name:MODELS[c.model].name,size:c.size,q:c.qty,p:MODELS[c.model].price*c.qty}})};
+        items:cart.map(function(c){return {name:MODELS[c.model].name,size:c.size,q:c.qty,p:unit(c.model,c.size)*c.qty}})};
       cart=[];view='done';
     }
     renderCart();
