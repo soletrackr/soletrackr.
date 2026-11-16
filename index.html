@@ -1,0 +1,902 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="SoleTrackr smart insoles measure pressure, motion and heart rate from inside your shoe. Demo store.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>SoleTrackr</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: the app's own look, taken straight from the SoleTrackr design. Dark Lime theme by default, six switchable themes, big rounded cards, pill buttons, Space Grotesk numbers. One working phone in the hero; everything else is the same cards the app uses. */
+:root{
+  --stage:#dad7d0;--bg:#0e1013;--bg2:#0b0d10;--card:#171a1f;--chip:#23272e;--track:#2e343d;--line:#22262c;
+  --text:#f2f3f5;--sub:#a3aab4;--foot:#1f242b;--footline:#3a424d;--hr:#ff7a66;--zero:#262d36;--accent:#c6f432;
+  --font-display:'Space Grotesk','Helvetica Neue',Arial,sans-serif;
+  --font-body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color-scheme:dark;
+}
+html.th-midnight{--stage:#d6dae3;--bg:#0b1220;--bg2:#080e19;--card:#131c2e;--chip:#1d2940;--track:#2a3854;--line:#1d2940;--text:#eaf0ff;--sub:#9fb0cf;--foot:#18233a;--footline:#35476b;--hr:#ff8a7a;--zero:#1d2940;--accent:#8eb8ff}
+html.th-sunset{--stage:#e3d6c9;--bg:#17110e;--bg2:#120d0a;--card:#221914;--chip:#31241c;--track:#43332a;--line:#2c211a;--text:#fbf1e8;--sub:#c2ab99;--foot:#2a1f18;--footline:#5a4332;--hr:#ff7a66;--zero:#2a1f18;--accent:#ffb84d}
+html.th-light{--stage:#e6e3dc;--bg:#f6f7f9;--bg2:#eef0f3;--card:#ffffff;--chip:#e8ebef;--track:#dde2e8;--line:#e3e7ec;--text:#14181d;--sub:#5a6470;--foot:#e6eaef;--footline:#bac3ce;--hr:#d9442f;--zero:#e2e7ed;--accent:#1e7b34;color-scheme:light}
+html.th-forest{--stage:#d5ddd4;--bg:#0c140f;--bg2:#09100c;--card:#142019;--chip:#1e2d24;--track:#2c4034;--line:#1b2a21;--text:#eaf5ec;--sub:#9db5a4;--foot:#1a2a20;--footline:#3a5444;--hr:#ff8a70;--zero:#1e2d24;--accent:#7ee08a}
+html.th-violet{--stage:#ddd6e8;--bg:#0f0b18;--bg2:#0b0812;--card:#191326;--chip:#251c38;--track:#352a4f;--line:#221a33;--text:#f1ebff;--sub:#b3a6cf;--foot:#1e1630;--footline:#4a3a6b;--hr:#ff8a9b;--zero:#251c38;--accent:#c9a7ff}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg2);color:var(--text);font-family:var(--font-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:40;background:var(--bg2)}
+body.lock{overflow:hidden}
+h1,h2,h3,h4{font-family:var(--font-display);margin:0;text-wrap:balance}
+h1{font-weight:700;letter-spacing:-.04em;line-height:.96}
+h2{font-weight:700;letter-spacing:-.035em;line-height:1;font-size:clamp(34px,5vw,60px)}
+p{margin:0}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:8px}
+.sub{color:var(--sub)}
+.wrap{max-width:1180px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--bg2);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:20px;height:68px}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;font:700 22px var(--font-display);letter-spacing:-.025em}
+.appicon{width:36px;height:36px;border-radius:10px;background:var(--accent);display:grid;place-items:center;flex:none}
+.appicon svg{width:22px;height:22px;stroke:var(--bg)}
+.nav{display:flex;gap:26px;margin-left:auto;font-size:14px;font-weight:500}
+.nav a{text-decoration:none;color:var(--sub)}
+.nav a:hover{color:var(--text)}
+.cartbtn{display:flex;align-items:center;gap:10px;border:0;background:var(--card);border-radius:999px;padding:6px 6px 6px 18px;font-size:14px;font-weight:600}
+.cartbtn .n{min-width:28px;height:28px;border-radius:14px;background:var(--accent);color:var(--bg);font-size:13px;display:grid;place-items:center}
+@media(max-width:760px){.nav{display:none}.cartbtn{margin-left:auto}}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:56px;border-radius:28px;border:0;background:var(--accent);color:var(--bg);padding:0 32px;font:600 16px var(--font-body);text-decoration:none;text-align:center}
+.btn:hover{filter:brightness(1.07)}
+.btn.soft{background:var(--chip);color:var(--text)}
+.btn.block{width:100%}
+.card{background:var(--card);border-radius:28px;padding:26px}
+
+/* hero */
+.hero{padding-block:56px 80px}
+.hero .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.95fr);gap:56px;align-items:center}
+.hero h1{font-size:clamp(48px,7.2vw,96px);margin:0 0 24px}
+.hero .lede{font-size:20px;max-width:40ch;color:var(--sub)}
+.hero .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
+.hero .facts{margin-top:36px;display:flex;gap:8px 26px;flex-wrap:wrap;font-size:14px;color:var(--sub)}
+.hero .facts b{color:var(--text);font-weight:600}
+.stage{background:var(--stage);border-radius:44px;padding:44px 16px;display:flex;justify-content:center}
+.themes{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:18px;justify-content:center}
+.themes > span{font-size:13px;color:var(--sub)}
+.themes button{display:flex;align-items:center;justify-content:center;gap:5px;width:58px;height:40px;border-radius:14px;border:2px solid transparent;padding:0}
+.themes button[aria-pressed="true"]{border-color:var(--text)}
+.themes i{display:block;width:12px;height:12px;border-radius:6px}
+.themes b{display:block;width:18px;height:9px;border-radius:5px}
+@media(max-width:960px){.hero .grid{grid-template-columns:minmax(0,1fr);gap:44px}.hero{padding-block:32px 56px}}
+
+/* the phone: native app size, scaled */
+.phw{--s:.74;width:calc(429px*var(--s));height:calc(891px*var(--s));position:relative;flex:none}
+@media(max-width:420px){.phw{--s:.66}}
+.ph{position:absolute;left:0;top:0;width:429px;height:891px;transform-origin:0 0;transform:scale(var(--s));border-radius:72px;background:#2B2C2F;box-shadow:inset 0 0 0 2px #4B4D52,0 0 0 1px #17181A,0 30px 60px rgba(20,20,20,.35)}
+.ph *{box-sizing:border-box}
+.ph .sb{position:absolute;width:4px;background:#2B2C2F}
+.ph .screen{position:absolute;left:14px;top:14px;width:402px;height:874px;border-radius:58px;overflow:hidden;background:var(--bg);font-family:var(--font-body);color:var(--text)}
+.ph .isl{position:absolute;left:141px;top:11px;width:120px;height:34px;border-radius:17px;background:#000;z-index:5}
+.ph .sc{position:absolute;left:0;top:56px;width:402px;height:718px;overflow-y:auto;scrollbar-width:none;overscroll-behavior:auto}
+.ph .sc::-webkit-scrollbar{display:none}
+.ph .in{padding:8px 20px 28px;display:flex;flex-direction:column;gap:14px}
+.ph .stc{background:var(--card);border-radius:24px;padding:18px}
+.ph .stl{font-size:12px;color:var(--sub)}
+.ph .stv{font:600 22px/1.15 var(--font-display);color:var(--text)}
+.ph .stu{font-size:13px;font-weight:500;color:var(--sub)}
+.ph .sth{margin:2px 0 0;font:700 30px/1.1 var(--font-display);color:var(--text);letter-spacing:0}
+.ph .stsub{font-size:13px;color:var(--sub)}
+.ph .stbtn{height:52px;width:100%;border:0;border-radius:26px;font:600 16px var(--font-body);text-align:center}
+.ph .seg{display:flex;gap:4px;background:var(--card);border-radius:26px;padding:4px}
+.ph .seg button{flex:1;height:44px;border-radius:22px;background:transparent;color:var(--sub);border:0;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px}
+.ph .seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.ph .seg.line button{border:1px solid var(--line)}
+.ph .seg.line button[aria-pressed="true"]{border-color:var(--accent)}
+.ph .bar{height:6px;border-radius:3px;background:var(--track)}
+.ph .bar i{display:block;height:6px;border-radius:3px;background:var(--accent)}
+.ph .row{display:flex;justify-content:space-between;align-items:center;min-height:50px;font-size:14px;border-bottom:1px solid var(--chip)}
+.ph .row:last-child{border-bottom:0}
+.ph .row span:last-child{color:var(--sub)}
+.ph .sw{width:52px;height:32px;border-radius:16px;background:var(--accent);position:relative}
+.ph .sw::after{content:"";position:absolute;top:3px;left:23px;width:26px;height:26px;border-radius:13px;background:var(--text)}
+.ph .fr{transition:fill 1.2s ease}
+.ph .tabs{position:absolute;left:0;top:774px;width:402px;height:100px;background:var(--bg);border-top:1px solid var(--line);display:flex;padding:8px 6px 0}
+.ph .tabs button{flex:1;height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:none;border:0;color:var(--sub);font-size:11px;font-weight:600}
+.ph .tabs button[aria-current="true"]{color:var(--accent)}
+.ph .tabs svg{width:24px;height:24px}
+.ph .hind{position:absolute;left:134px;top:861px;width:134px;height:5px;border-radius:3px;background:var(--text)}
+.ph .clock{position:absolute;left:46px;top:17px;font:600 17px/22px var(--font-body)}
+.ph .sicons{position:absolute;right:36px;top:21px;display:flex;align-items:center;gap:6px}
+.ph [hidden]{display:none!important}
+
+/* sections */
+.sec{padding-block:96px}
+.alt{background:var(--bg)}
+.sec-head{max-width:800px;margin-bottom:48px}
+.sec-head p{margin-top:18px;color:var(--sub);font-size:19px;max-width:50ch}
+@media(max-width:800px){.sec{padding-block:64px}}
+
+/* compare to a wrist tracker */
+.cmp{display:grid;grid-template-columns:minmax(0,1fr) 150px 150px;font-size:16px}
+.cmp > div{padding:16px 0;border-bottom:1px solid var(--line);display:flex;align-items:center}
+.cmp .h{font:700 20px var(--font-display);letter-spacing:-.02em;border-bottom:1px solid var(--sub)}
+.cmp .c{justify-content:center;text-align:center;color:var(--sub)}
+.cmp .c.y{color:var(--accent);font-weight:600}
+.cmp .last{border-bottom:0}
+.note{font-size:13px;color:var(--sub);margin-top:16px}
+@media(max-width:600px){.cmp{grid-template-columns:minmax(0,1fr) 84px 84px;font-size:14px}.cmp .h{font-size:15px}}
+
+/* bento */
+.bento{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px}
+.bento .card{display:flex;flex-direction:column;gap:6px;min-width:0}
+.b1{grid-column:span 3}.b2{grid-column:span 3}.b3{grid-column:span 2}.b4{grid-column:span 2}.b5{grid-column:span 2}.b6{grid-column:span 6}
+.bl{font-size:13px;color:var(--sub)}
+.bv{font:700 44px/1.05 var(--font-display);letter-spacing:-.03em}
+.bv small{font-size:18px;font-weight:500;color:var(--sub);letter-spacing:0}
+.ring{position:relative;width:150px;height:150px;flex:none}
+.ring > div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+@media(max-width:900px){.b1,.b2,.b3,.b4,.b5,.b6{grid-column:span 6}}
+
+/* hardware */
+.hw{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:16px;align-items:stretch}
+.hw .fig{padding:20px 20px 8px}
+.fig svg{display:block;width:100%;height:auto}
+.parts{display:grid;gap:12px;margin:0;padding:0;list-style:none;align-content:start}
+.parts li{display:grid;grid-template-columns:36px minmax(0,1fr);gap:14px;background:var(--card);border-radius:24px;padding:20px}
+.parts .k{width:34px;height:34px;border-radius:17px;background:var(--accent);color:var(--bg);display:grid;place-items:center;font:700 16px var(--font-display)}
+.parts b{display:block;font:600 20px var(--font-display);letter-spacing:-.015em;margin-bottom:2px}
+.parts span{color:var(--sub);font-size:15px}
+.pod{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:16px;margin-top:16px}
+.pod svg{display:block;width:100%;max-width:520px;height:auto;margin-inline:auto}
+dl.spec{margin:0;display:grid;grid-template-columns:minmax(0,120px) minmax(0,1fr)}
+dl.spec dt,dl.spec dd{margin:0;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px}
+dl.spec dt{color:var(--sub)}
+dl.spec dt:last-of-type,dl.spec dd:last-of-type{border-bottom:0}
+@media(max-width:900px){.hw,.pod{grid-template-columns:minmax(0,1fr)}}
+
+/* shop */
+.shop{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:20px;align-items:start}
+.preview{position:sticky;top:calc(92px + env(safe-area-inset-top,0px));padding:28px}
+.preview svg{display:block;width:100%;max-width:200px;height:auto;margin-inline:auto}
+.preview .cap{display:flex;justify-content:space-between;align-items:baseline;margin-top:18px}
+.preview .cap b{font:700 26px var(--font-display);letter-spacing:-.02em}
+.preview .cap span{font-size:14px;color:var(--sub)}
+.field{margin-bottom:28px}
+.field > .lab{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.field > .lab b{font:600 18px var(--font-display)}
+.field > .lab span{font-size:13px;color:var(--sub)}
+.models{display:grid;gap:12px;border:0;padding:0;margin:0}
+.model{position:relative}
+.model input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0}
+.model label{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;padding:20px 22px;border-radius:24px;background:var(--card);border:2px solid transparent;cursor:pointer}
+.model .nm{font:700 28px/1.1 var(--font-display);letter-spacing:-.025em}
+.model .pr{font:700 28px/1.1 var(--font-display);letter-spacing:-.025em}
+.model .ds{grid-column:1 / -1;font-size:14px;color:var(--sub)}
+.model .tag{grid-column:1 / -1;display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.model .tag span{font-size:12px;font-weight:600;padding:4px 10px;border-radius:12px;background:var(--chip);color:var(--sub)}
+.model input:checked + label{border-color:var(--accent)}
+.model input:checked + label .tag span{color:var(--text)}
+.model input:focus-visible + label{outline:2px solid var(--accent);outline-offset:3px}
+.sizes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;border:0;padding:0;margin:0}
+.size{position:relative}
+.size input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0}
+.size label{display:grid;place-items:center;height:50px;border-radius:25px;background:var(--card);cursor:pointer;font:600 16px var(--font-display)}
+.size input:checked + label{background:var(--accent);color:var(--bg)}
+.size input:focus-visible + label{outline:2px solid var(--accent);outline-offset:3px}
+.buyrow{display:flex;gap:12px}
+.qty{display:flex;align-items:center;background:var(--card);border-radius:28px;height:56px}
+.qty button{width:48px;height:56px;background:none;border:0;font-size:22px}
+.qty output{min-width:26px;text-align:center;font:600 17px var(--font-display)}
+.buyrow .btn{flex:1}
+.incl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 20px;margin:22px 0 0;padding:0;font-size:14px;color:var(--sub);list-style:none}
+@media(max-width:900px){.shop{grid-template-columns:minmax(0,1fr)}.preview{position:static}}
+
+/* start + faq */
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;counter-reset:s}
+.steps .card::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:44px;height:44px;border-radius:22px;background:var(--accent);color:var(--bg);font:700 20px var(--font-display);margin-bottom:56px}
+.steps b{display:block;font:700 24px var(--font-display);letter-spacing:-.02em;margin-bottom:6px}
+.steps span{color:var(--sub)}
+@media(max-width:800px){.steps{grid-template-columns:minmax(0,1fr)}.steps .card::before{margin-bottom:24px}}
+.faq{max-width:820px}
+details{background:var(--card);border-radius:20px;margin-bottom:10px}
+summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:16px;padding:20px 24px;font:600 18px var(--font-display);letter-spacing:-.01em}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:24px;line-height:1;color:var(--accent)}
+details[open] summary::after{content:"–"}
+details p{padding:0 24px 22px;color:var(--sub);max-width:62ch}
+footer{border-top:1px solid var(--line)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px 40px;justify-content:space-between;padding-block:36px 56px;color:var(--sub);font-size:14px}
+footer p{max-width:58ch}
+
+/* cart */
+.scrim{position:fixed;inset:0;background:rgba(5,8,12,.6);z-index:60}
+.drawer{position:fixed;top:0;right:0;bottom:0;z-index:70;width:min(440px,100%);background:var(--bg);border-left:1px solid var(--line);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-right:env(safe-area-inset-right,0px)}
+.dr-head{display:flex;justify-content:space-between;align-items:center;padding:18px 20px}
+.dr-head h3{font-size:32px;letter-spacing:-.03em}
+.iconbtn{border:0;background:var(--chip);border-radius:50%;width:44px;height:44px;font-size:16px}
+.dr-body{flex:1;overflow-y:auto;padding:4px 20px 18px;min-height:0}
+.dr-foot{padding:16px 20px 22px;display:grid;gap:10px;background:var(--card);border-radius:28px 28px 0 0}
+.ship{margin-bottom:14px;font-size:13px;color:var(--sub);background:var(--card);border-radius:18px;padding:14px 16px}
+.ship .track{height:6px;background:var(--track);border-radius:3px;margin-top:10px;overflow:hidden}
+.ship .track i{display:block;height:100%;background:var(--accent);border-radius:3px;transition:width .3s}
+.line{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:14px;padding:16px 0;border-bottom:1px solid var(--line);align-items:start}
+.line .thumb{background:var(--card);border-radius:14px;height:84px;display:grid;place-items:center}
+.line .thumb svg{width:24px;height:58px}
+.line .t b{display:block;font:600 18px var(--font-display)}
+.line .t span{font-size:13px;color:var(--sub)}
+.line .pp{font:600 17px var(--font-display);text-align:right}
+.mini{display:inline-flex;align-items:center;background:var(--chip);border-radius:18px;margin-top:10px}
+.mini button{width:34px;height:34px;background:none;border:0;font-size:17px}
+.mini output{min-width:22px;text-align:center;font:600 14px var(--font-display)}
+.rm{background:none;border:0;padding:0;margin:10px 0 0 12px;font-size:13px;color:var(--sub);text-decoration:underline}
+.sumrow{display:flex;justify-content:space-between;font-size:15px}
+.sumrow.total{font:700 22px var(--font-display);letter-spacing:-.02em;padding-top:6px}
+.empty{text-align:center;padding:56px 12px;color:var(--sub)}
+.empty h4{font-size:28px;color:var(--text);margin:0 0 8px;letter-spacing:-.02em}
+.demo{font-size:12px;color:var(--sub);text-align:center}
+.form{display:grid;gap:14px}
+.form label{display:grid;gap:6px;font-size:13px;font-weight:600}
+.form input,.form select{font:inherit;font-weight:400;height:48px;padding:0 16px;border:1px solid var(--line);border-radius:16px;background:var(--card);color:var(--text);width:100%}
+.form .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.done h4{font-size:44px;letter-spacing:-.035em;line-height:1;margin:6px 0 14px}
+.done .ord{display:inline-block;border-radius:16px;padding:6px 14px;background:var(--accent);color:var(--bg);margin-bottom:16px;font:700 14px var(--font-display)}
+.done ul{padding:0;margin:0 0 18px;list-style:none;border-top:1px solid var(--line)}
+.done li{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px}
+
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.ph .fr{transition:none}.ship .track i{transition:none}}
+[hidden]{display:none!important}
+img{max-width:100%}
+</style>
+</head>
+<body>
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="heat" filterUnits="userSpaceOnUse" x="-60" y="-60" width="360" height="680" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="15"/>
+      <feColorMatrix type="matrix" values="0 0 0 1.7 0  0 0 0 1.7 0  0 0 0 1.7 0  0 0 0 5 0"/>
+      <feComponentTransfer>
+        <feFuncR type="table" tableValues="0.18 0.184 0.91 1 1"/>
+        <feFuncG type="table" tableValues="0.416 0.639 0.827 0.604 0.353"/>
+        <feFuncB type="table" tableValues="0.557 0.604 0.29 0.239 0.29"/>
+      </feComponentTransfer>
+    </filter>
+    <clipPath id="clipI"><path d="M120 10C170 10 205 45 208 110C211 165 190 215 178 270C170 320 172 380 170 430C168 500 150 545 112 548C72 551 56 505 60 440C62 385 78 335 68 280C56 220 22 170 22 105C22 45 65 10 120 10Z"/></clipPath>
+    <filter id="stBlur" filterUnits="userSpaceOnUse" x="-60" y="-60" width="200" height="320"><feGaussianBlur stdDeviation="8"/></filter>
+    <clipPath id="stFoot"><path d="M44 4C66 2 82 20 81 46C80 68 64 84 58 106C54 124 62 150 64 172C65 190 52 198 40 197C28 196 20 186 21 170C22 150 16 130 11 108C6 86 6 70 8 52C10 26 24 6 44 4Z"/></clipPath>
+  </defs>
+</svg>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="SoleTrackr home">
+      <span class="appicon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 3.5c2.6-.6 4.6 1.2 4.6 4 0 2.2-1.6 3.6-1.8 5.5-.2 1.8.6 3.4.2 5-.3 1.4-1.5 2.4-3 2.4s-2.6-1-2.7-2.6c-.1-1.8.6-3 .2-4.9C6.4 10.5 5.6 9 6 7c.4-2 1.9-3.1 3.5-3.5z"/></svg></span>
+      SoleTrackr
+    </a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#why">Why insoles</a><a href="#app">The app</a><a href="#hardware">Hardware</a><a href="#shop">Shop</a><a href="#faq">FAQ</a>
+    </nav>
+    <button class="cartbtn" id="openCart" aria-haspopup="dialog">Cart <span class="n" id="cartN" aria-live="polite">0</span></button>
+  </div>
+</header>
+
+<main id="top">
+<div class="hero">
+  <div class="wrap grid">
+    <div>
+      <h1>Fitness tracking, from the ground up.</h1>
+      <p class="lede">SoleTrackr insoles measure pressure, motion and heart rate from inside your shoe, so you see how you move and not just how far.</p>
+      <div class="cta">
+        <a class="btn" href="#shop">Shop from $106.99</a>
+        <a class="btn soft" href="#app">See the app</a>
+      </div>
+      <div class="facts"><span><b>US 6–13</b> sizes</span><span><b>30-day</b> returns</span><span>Free shipping over <b>$150</b></span></div>
+    </div>
+    <div>
+      <div class="stage">
+        <div class="phw">
+          <div class="ph">
+            <div class="sb" style="left:-4px;top:130px;height:34px"></div><div class="sb" style="left:-4px;top:190px;height:62px"></div><div class="sb" style="left:-4px;top:260px;height:62px"></div><div class="sb" style="left:429px;top:640px;height:60px"></div>
+            <div class="screen">
+              <span class="isl"></span>
+              <div class="clock">9:41</div>
+              <div class="sicons" aria-hidden="true">
+                <svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1" fill="var(--text)"/><rect x="5" y="5.5" width="3" height="6.5" rx="1" fill="var(--text)"/><rect x="10" y="3" width="3" height="9" rx="1" fill="var(--text)"/><rect x="15" y="0" width="3" height="12" rx="1" fill="var(--text)"/></svg>
+                <svg width="27" height="13" viewBox="0 0 27 13"><rect x="0.5" y="0.5" width="23" height="12" rx="3.5" fill="none" stroke="var(--text)" stroke-opacity="0.45"/><rect x="2" y="2" width="20" height="9" rx="2" fill="var(--text)"/><path d="M25 4.5v4c1-.3 1.8-1.2 1.8-2s-.8-1.7-1.8-2z" fill="var(--text)" fill-opacity="0.5"/></svg>
+              </div>
+
+              <!-- TODAY -->
+              <div class="sc" data-s="today"><div class="in">
+                <div style="display:flex;align-items:center;justify-content:space-between;padding-top:6px">
+                  <div><div class="stsub">Thursday 12 November</div><h1 class="sth">Today</h1></div>
+                  <div style="width:44px;height:44px;border-radius:22px;background:var(--accent);color:var(--bg);display:grid;place-items:center;font:600 15px var(--font-display)">AM</div>
+                </div>
+                <div class="seg" role="group" aria-label="What your feet are doing" data-modes></div>
+                <div class="stc" style="display:flex;align-items:center;gap:18px">
+                  <div class="ring" style="width:150px;height:150px">
+                    <svg width="150" height="150" viewBox="0 0 160 160" aria-hidden="true"><circle cx="80" cy="80" r="68" fill="none" stroke="var(--track)" stroke-width="14"/><circle cx="80" cy="80" r="68" fill="none" stroke="var(--accent)" stroke-width="14" stroke-linecap="round" stroke-dasharray="359 427.3" transform="rotate(-90 80 80)"/></svg>
+                    <div><div style="font:700 32px/1 var(--font-display)">8,412</div><div class="stl" style="margin-top:4px">of 10,000 steps</div></div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:12px;flex:1;min-width:0">
+                    <div><div class="stl">Distance</div><div class="stv">6.3 <span class="stu">km</span></div></div>
+                    <div><div class="stl">Active time</div><div class="stv">74 <span class="stu">min</span></div></div>
+                    <div><div class="stl">Heart rate</div><div class="stv"><span data-hr>104</span> <span class="stu">bpm</span></div></div>
+                  </div>
+                </div>
+                <div class="stc">
+                  <div style="display:flex;align-items:center;justify-content:space-between">
+                    <div style="display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:4px;background:var(--accent)"></span><span style="font-size:13px;font-weight:600">Live from your insoles</span></div>
+                    <span class="stl">Synced just now</span>
+                  </div>
+                  <div style="margin-top:14px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
+                    <div><div class="stl">Activity</div><div style="font:600 18px/1.2 var(--font-display)" data-mname>Walking</div></div>
+                    <div><div class="stl">Surface</div><div style="font:600 18px/1.2 var(--font-display)" data-msurf>Road</div></div>
+                    <div><div class="stl">Heart rate</div><div style="font:600 18px/1.2 var(--font-display);color:var(--hr)"><span data-hr>104</span> bpm</div></div>
+                  </div>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px">
+                  <div class="stc" style="padding:16px">
+                    <div class="stl">Heart rate, live</div>
+                    <div class="stv" style="font-size:24px"><span data-hr>104</span> <span class="stu">bpm</span></div>
+                    <svg width="142" height="44" viewBox="0 0 142 44" aria-hidden="true" style="margin-top:10px;display:block"><polyline points="0,30 14,26 28,32 42,20 56,24 70,14 84,22 98,12 112,18 126,10 142,16" fill="none" stroke="var(--hr)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </div>
+                  <div class="stc" style="padding:16px">
+                    <div class="stl">Terrain today</div>
+                    <div style="margin-top:12px;display:flex;height:10px;border-radius:5px;overflow:hidden;gap:2px"><div style="flex:71;background:var(--accent)"></div><div style="flex:18;background:#5DBB7A"></div><div style="flex:11;background:#C28A5C"></div></div>
+                    <div style="margin-top:10px;display:flex;flex-direction:column;gap:3px;font-size:12px"><div style="display:flex;justify-content:space-between"><span>Road</span><span class="stl">71%</span></div><div style="display:flex;justify-content:space-between"><span>Grass</span><span class="stl">18%</span></div><div style="display:flex;justify-content:space-between"><span>Trail</span><span class="stl">11%</span></div></div>
+                  </div>
+                </div>
+              </div></div>
+
+              <!-- ACTIVITY -->
+              <div class="sc" data-s="activity" hidden><div class="in">
+                <div style="padding-top:6px"><div class="stsub">Record and review</div><h1 class="sth">Activity</h1></div>
+                <div class="seg" role="group" aria-label="Activity view"><button type="button" aria-pressed="false">Record</button><button type="button" aria-pressed="true">History</button></div>
+                <div class="stc" style="padding:6px 18px">
+                  <div style="display:flex;align-items:center;justify-content:space-between;min-height:68px;border-bottom:1px solid var(--chip)"><span><span style="display:block;font-size:15px;font-weight:600">Morning run</span><span class="stl" style="display:block;margin-top:2px">Mon 9 Nov · 6:12 am</span></span><span style="text-align:right"><span style="display:block;font:600 17px/1.2 var(--font-display)">8.4 km</span><span class="stl" style="display:block;margin-top:2px">46:18</span></span></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;min-height:68px;border-bottom:1px solid var(--chip)"><span><span style="display:block;font-size:15px;font-weight:600">Evening walk</span><span class="stl" style="display:block;margin-top:2px">Sun 8 Nov · 6:40 pm</span></span><span style="text-align:right"><span style="display:block;font:600 17px/1.2 var(--font-display)">4.2 km</span><span class="stl" style="display:block;margin-top:2px">51:02</span></span></div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;min-height:68px"><span><span style="display:block;font-size:15px;font-weight:600">Football training</span><span class="stl" style="display:block;margin-top:2px">Sat 7 Nov · 4:00 pm</span></span><span style="text-align:right"><span style="display:block;font:600 17px/1.2 var(--font-display)">6.9 km</span><span class="stl" style="display:block;margin-top:2px">1:12:40</span></span></div>
+                </div>
+                <div class="stc">
+                  <div class="stl">Last run, terrain underfoot</div>
+                  <div style="margin-top:10px;display:flex;height:14px;border-radius:7px;overflow:hidden"><div style="flex:26;background:var(--accent)"></div><div style="flex:24;background:#C28A5C"></div><div style="flex:18;background:var(--accent)"></div><div style="flex:9;background:#5DBB7A"></div><div style="flex:7;background:var(--accent)"></div></div>
+                  <div class="stl" style="margin-top:10px">Detected by your insoles</div>
+                </div>
+              </div></div>
+
+              <!-- GAIT -->
+              <div class="sc" data-s="gait" hidden><div class="in">
+                <div style="padding-top:6px"><div class="stsub" data-gsub>Walking on road</div><h1 class="sth">Gait &amp; balance</h1></div>
+                <div class="seg" role="group" aria-label="What your feet are doing" data-modes></div>
+                <div class="stc">
+                  <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:14px;font-weight:600">Terrain underfoot</span><span class="stl" data-tstatus>Detecting live</span></div>
+                  <div class="seg line" role="group" aria-label="Surface" data-surfs style="margin-top:12px;padding:0;background:none;gap:6px"></div>
+                  <div class="stl" style="margin-top:10px;line-height:1.45" data-tnote></div>
+                </div>
+                <div class="stc">
+                  <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;text-align:center"><div style="font-size:13px;font-weight:600">Left · <span data-bl>51</span>%</div><div style="font-size:13px;font-weight:600">Right · <span data-br>49</span>%</div></div>
+                  <div id="feet"></div>
+                  <div style="margin:4px 0 14px;display:flex;align-items:center;gap:10px"><span class="stl">Light</span><span style="flex:1;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--zero),#2E6A8E,#2FA39A,#E8D34A,#FF9A3D,#FF5A4A)"></span><span class="stl">Heavy</span></div>
+                  <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
+                    <div style="display:flex;flex-direction:column;gap:6px;font-size:13px"><div style="display:flex;justify-content:space-between"><span>Heel</span><span class="stl" data-p="lh"></span></div><div style="display:flex;justify-content:space-between"><span>Midfoot</span><span class="stl" data-p="lm"></span></div><div style="display:flex;justify-content:space-between"><span>Forefoot</span><span class="stl" data-p="lf"></span></div></div>
+                    <div style="display:flex;flex-direction:column;gap:6px;font-size:13px"><div style="display:flex;justify-content:space-between"><span>Heel</span><span class="stl" data-p="rh"></span></div><div style="display:flex;justify-content:space-between"><span>Midfoot</span><span class="stl" data-p="rm"></span></div><div style="display:flex;justify-content:space-between"><span>Forefoot</span><span class="stl" data-p="rf"></span></div></div>
+                  </div>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+                  <div class="stc" style="border-radius:20px;padding:14px"><div class="stl">Foot strike</div><div class="stv" style="font-size:18px;margin-top:2px" data-g="strike"></div></div>
+                  <div class="stc" style="border-radius:20px;padding:14px"><div class="stl">Pronation</div><div class="stv" style="font-size:18px;margin-top:2px" data-g="pron"></div></div>
+                  <div class="stc" style="border-radius:20px;padding:14px"><div class="stl">Ground contact</div><div class="stv" style="font-size:18px;margin-top:2px" data-g="contact"></div></div>
+                  <div class="stc" style="border-radius:20px;padding:14px"><div class="stl">Cadence</div><div class="stv" style="font-size:18px;margin-top:2px" data-g="cad"></div></div>
+                </div>
+                <div class="stc"><div style="font-size:12px;font-weight:600;color:var(--accent);letter-spacing:.04em">INSIGHT</div><div style="margin-top:6px;font-size:14px;line-height:1.5" data-g="insight"></div></div>
+              </div></div>
+
+              <!-- INSOLES -->
+              <div class="sc" data-s="insoles" hidden><div class="in">
+                <div style="padding-top:6px"><div class="stsub">SoleTrackr · Size US 9</div><h1 class="sth">Your insoles</h1></div>
+                <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px">
+                  <div class="stc" style="padding:16px"><div style="font-size:13px;font-weight:600">Left insole</div><div class="stl" style="margin-top:2px">Connected</div><div style="margin-top:14px;font:600 26px/1.1 var(--font-display)">82%</div><div class="bar" style="margin-top:8px"><i style="width:82%"></i></div></div>
+                  <div class="stc" style="padding:16px"><div style="font-size:13px;font-weight:600">Right insole</div><div class="stl" style="margin-top:2px">Connected</div><div style="margin-top:14px;font:600 26px/1.1 var(--font-display)">79%</div><div class="bar" style="margin-top:8px"><i style="width:79%"></i></div></div>
+                </div>
+                <div class="stc" style="padding:6px 18px">
+                  <div class="row"><span>Last synced</span><span>Just now</span></div>
+                  <div class="row"><span>Firmware</span><span>v2.4.1 · Up to date</span></div>
+                  <div class="row"><span>Sensors</span><span>Pressure · Heart rate · Motion</span></div>
+                </div>
+                <button type="button" class="stbtn" style="background:var(--accent);color:var(--bg)">Sync now</button>
+                <button type="button" class="stbtn" style="background:var(--chip);color:var(--text)">Recalibrate fit</button>
+                <div class="stc" style="padding:6px 18px">
+                  <div class="row"><span>Heart rate tracking</span><span class="sw"></span></div>
+                  <div class="row"><span>Auto-detect activity</span><span class="sw"></span></div>
+                  <div class="row"><span>Terrain detection</span><span class="sw"></span></div>
+                </div>
+              </div></div>
+
+              <div class="tabs" id="tabs"></div>
+              <span class="hind"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="themes" id="themes"><span>Theme</span></div>
+    </div>
+  </div>
+</div>
+
+<section id="why" class="alt">
+  <div class="wrap sec">
+    <div class="sec-head">
+      <h2>Your wrist can't feel your feet.</h2>
+      <p>A watch or band guesses how you move from your arm. SoleTrackr measures it at the one place you touch the ground.</p>
+    </div>
+    <div class="card" style="padding:12px 28px 24px">
+      <div class="cmp">
+        <div class="h"></div><div class="h c">Wrist tracker</div><div class="h c" style="color:var(--accent)">SoleTrackr</div>
+        <div>Steps and distance</div><div class="c">Yes</div><div class="c y">Yes</div>
+        <div>Heart rate</div><div class="c">Yes</div><div class="c y">Yes</div>
+        <div>Pressure under each foot</div><div class="c">–</div><div class="c y">Yes</div>
+        <div>Left and right balance</div><div class="c">–</div><div class="c y">Yes</div>
+        <div>Foot strike and pronation</div><div class="c">–</div><div class="c y">Yes</div>
+        <div class="last">Road, grass or trail underfoot</div><div class="c last">–</div><div class="c y last">Yes</div>
+      </div>
+      <p class="note">Based on typical wrist trackers. Features vary by device. Use both if you like: SoleTrackr works alongside your watch.</p>
+    </div>
+  </div>
+</section>
+
+<section id="app">
+  <div class="wrap sec">
+    <div class="sec-head">
+      <h2>All of it, live in the app.</h2>
+      <p>Everything below is a real card from the SoleTrackr app. Try the phone above to see it respond.</p>
+    </div>
+    <div class="bento">
+      <div class="card b1" style="flex-direction:row;align-items:center;gap:22px">
+        <div class="ring"><svg width="150" height="150" viewBox="0 0 160 160" aria-hidden="true"><circle cx="80" cy="80" r="68" fill="none" stroke="var(--track)" stroke-width="14"/><circle cx="80" cy="80" r="68" fill="none" stroke="var(--accent)" stroke-width="14" stroke-linecap="round" stroke-dasharray="359 427.3" transform="rotate(-90 80 80)"/></svg><div><div style="font:700 32px/1 var(--font-display)">8,412</div><div class="bl" style="margin-top:4px">of 10,000 steps</div></div></div>
+        <div style="display:grid;gap:12px;min-width:0"><div><div class="bl">Distance</div><div style="font:600 24px var(--font-display)">6.3 <small style="font-size:14px;color:var(--sub)">km</small></div></div><div><div class="bl">Active time</div><div style="font:600 24px var(--font-display)">74 <small style="font-size:14px;color:var(--sub)">min</small></div></div></div>
+      </div>
+      <div class="card b2">
+        <div class="bl">Heart rate, live</div>
+        <div class="bv">112 <small>bpm</small></div>
+        <svg viewBox="0 0 320 80" width="100%" height="80" preserveAspectRatio="none" aria-label="Heart rate trend" role="img" style="margin-top:8px"><polyline points="0,56 22,50 44,60 66,38 88,46 110,26 132,42 154,22 176,34 198,18 220,30 242,16 264,26 286,12 320,22" fill="none" stroke="var(--hr)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>
+      </div>
+      <div class="card b3">
+        <div class="bl">Terrain today</div>
+        <div style="margin-top:10px;display:flex;height:12px;border-radius:6px;overflow:hidden;gap:2px"><div style="flex:71;background:var(--accent)"></div><div style="flex:18;background:#5DBB7A"></div><div style="flex:11;background:#C28A5C"></div></div>
+        <div style="margin-top:14px;display:grid;gap:6px;font-size:14px"><div style="display:flex;justify-content:space-between"><span>Road</span><span class="sub">71%</span></div><div style="display:flex;justify-content:space-between"><span>Grass</span><span class="sub">18%</span></div><div style="display:flex;justify-content:space-between"><span>Trail</span><span class="sub">11%</span></div></div>
+      </div>
+      <div class="card b4">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:600 15px var(--font-display)">Last 7 days</span><span class="bl">9,120 avg</span></div>
+        <div style="margin-top:auto;display:flex;align-items:flex-end;justify-content:space-between;height:120px;padding-top:16px">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;flex:1"><div style="width:24px;height:70px;border-radius:8px;background:var(--track)"></div><span class="bl" style="font-size:11px">F</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;flex:1"><div style="width:24px;height:88px;border-radius:8px;background:var(--track)"></div><span class="bl" style="font-size:11px">S</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;flex:1"><div style="width:24px;height:52px;border-radius:8px;background:var(--track)"></div><span class="bl" style="font-size:11px">S</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;flex:1"><div style="width:24px;height:96px;border-radius:8px;background:var(--track)"></div><span class="bl" style="font-size:11px">M</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;flex:1"><div style="width:24px;height:80px;border-radius:8px;background:var(--track)"></div><span class="bl" style="font-size:11px">T</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;flex:1"><div style="width:24px;height:102px;border-radius:8px;background:var(--track)"></div><span class="bl" style="font-size:11px">W</span></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;flex:1"><div style="width:24px;height:84px;border-radius:8px;background:var(--accent)"></div><span class="bl" style="font-size:11px">T</span></div>
+        </div>
+      </div>
+      <div class="card b5">
+        <div class="bl">Left and right balance</div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px"><span class="bv" style="font-size:34px">51<small>%</small></span><span class="bv" style="font-size:34px;color:var(--sub)">49<small>%</small></span></div>
+        <div style="display:flex;height:10px;border-radius:5px;overflow:hidden;gap:3px;margin-top:6px"><div style="flex:51;background:var(--accent)"></div><div style="flex:49;background:var(--track)"></div></div>
+        <p class="bl" style="margin-top:14px;line-height:1.5">Your left side carries about 2% more load, well within a healthy range.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="hardware" class="alt">
+  <div class="wrap sec">
+    <div class="sec-head">
+      <h2>A thin insole and a pod the size of a lighter.</h2>
+      <p>The insole goes under your shoe's own liner. The pod clips into the arch, where your foot presses least.</p>
+    </div>
+    <div class="hw">
+      <div class="card fig">
+        <svg viewBox="0 0 680 540" role="img" aria-label="Exploded drawing: the sensor pod above an insole above a running shoe, with dashed lines showing how they fit together.">
+          <g transform="translate(585,178) scale(1,.3) rotate(90) scale(.92)"><path d="M120 10C170 10 205 45 208 110C211 165 190 215 178 270C170 320 172 380 170 430C168 500 150 545 112 548C72 551 56 505 60 440C62 385 78 335 68 280C56 220 22 170 22 105C22 45 65 10 120 10Z" fill="#0b0d10" stroke="var(--footline)" stroke-width="2"/></g>
+          <g transform="translate(585,170) scale(1,.3) rotate(90) scale(.92)">
+            <path d="M120 10C170 10 205 45 208 110C211 165 190 215 178 270C170 320 172 380 170 430C168 500 150 545 112 548C72 551 56 505 60 440C62 385 78 335 68 280C56 220 22 170 22 105C22 45 65 10 120 10Z" fill="var(--foot)"/>
+            <g clip-path="url(#clipI)"><g filter="url(#heat)">
+              <circle cx="82" cy="52" r="52" fill="#000" opacity=".45"/><circle cx="80" cy="128" r="66" fill="#000" opacity=".9"/><circle cx="160" cy="140" r="56" fill="#000" opacity=".55"/><circle cx="119" cy="118" r="60" fill="#000" opacity=".7"/>
+              <circle cx="98" cy="458" r="64" fill="#000" opacity=".8"/><circle cx="140" cy="458" r="64" fill="#000" opacity=".85"/><circle cx="119" cy="508" r="66" fill="#000" opacity=".95"/><circle cx="150" cy="290" r="48" fill="#000" opacity=".3"/>
+            </g></g>
+            <path d="M120 10C170 10 205 45 208 110C211 165 190 215 178 270C170 320 172 380 170 430C168 500 150 545 112 548C72 551 56 505 60 440C62 385 78 335 68 280C56 220 22 170 22 105C22 45 65 10 120 10Z" fill="none" stroke="var(--text)" stroke-width="2.5"/>
+          </g>
+          <g>
+            <rect x="235" y="62" width="92" height="40" rx="16" fill="#16191D" stroke="#3A424D" stroke-width="1.5"/>
+            <rect x="241" y="66" width="80" height="13" rx="7" fill="#232930"/>
+            <circle cx="254" cy="88" r="5" fill="none" stroke="var(--accent)" stroke-width="2.2"/><circle cx="254" cy="88" r="1.8" fill="var(--accent)"/>
+            <rect x="311" y="83" width="12" height="8" rx="4" fill="#07090A"/>
+          </g>
+          <g stroke="var(--sub)" stroke-width="1.6" stroke-dasharray="5 5" fill="none"><line x1="281" y1="110" x2="281" y2="178"/><line x1="150" y1="232" x2="150" y2="352"/><line x1="236" y1="232" x2="236" y2="372"/></g>
+          <g fill="var(--sub)"><polygon points="276,176 286,176 281,186"/><polygon points="145,350 155,350 150,360"/><polygon points="231,368 241,368 236,378"/></g>
+          <g transform="translate(50,262) scale(.98)">
+            <path d="M36 214C32 170 38 128 64 112C96 100 140 104 172 112L196 92C206 88 216 92 220 100C262 134 336 164 410 176C482 186 546 190 566 208L566 216L36 216Z" fill="var(--chip)" stroke="var(--text)" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M64 112C96 100 140 104 172 112" fill="none" stroke="var(--text)" stroke-width="2" stroke-linecap="round"/>
+            <path d="M40 160C60 168 90 170 120 164" fill="none" stroke="var(--sub)" stroke-width="1.6" stroke-linecap="round"/>
+            <g stroke="var(--sub)" stroke-width="2" stroke-linecap="round"><path d="M236 118l20 26"/><path d="M258 128l20 26"/><path d="M280 138l20 25"/><path d="M302 148l20 24"/><path d="M324 158l20 23"/></g>
+            <path d="M26 214H566C578 214 583 226 575 238C566 252 548 260 524 260H62C40 260 26 252 26 236Z" fill="#2B2C2F" stroke="var(--text)" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M30 232H572" stroke="var(--chip)" stroke-width="3"/>
+          </g>
+          <g stroke="var(--sub)" stroke-width="1.6"><line x1="388" y1="82" x2="332" y2="82"/><line x1="618" y1="206" x2="582" y2="206"/><line x1="640" y1="452" x2="606" y2="452"/></g>
+          <g font-family="Space Grotesk,sans-serif" font-weight="700" font-size="17" text-anchor="middle" fill="var(--bg)">
+            <circle cx="404" cy="82" r="16" fill="var(--accent)"/><text x="404" y="88">1</text>
+            <circle cx="634" cy="206" r="16" fill="var(--accent)"/><text x="634" y="212">2</text>
+            <circle cx="656" cy="452" r="16" fill="var(--accent)"/><text x="656" y="458">3</text>
+          </g>
+        </svg>
+      </div>
+      <ol class="parts">
+        <li><span class="k">1</span><div><b>The pod</b><span>Pressure hub, motion sensor and heart-rate window in one 9 g capsule. Charges over USB-C.</span></div></li>
+        <li><span class="k">2</span><div><b>The insole</b><span>Pressure zones printed into a flexible 3 mm layer. Trim along the lines for your size.</span></div></li>
+        <li><span class="k">3</span><div><b>Your shoe</b><span>Any trainer or boot with a removable liner. Nothing to swap.</span></div></li>
+      </ol>
+    </div>
+    <div class="pod">
+      <div class="card">
+        <svg viewBox="0 0 440 340" role="img" aria-label="The pod from the top and from the skin side, with its 42 by 21 millimetre size marked.">
+          <g stroke="var(--sub)" stroke-width="1.4" fill="none"><line x1="70" y1="22" x2="370" y2="22"/><line x1="70" y1="16" x2="70" y2="28"/><line x1="370" y1="16" x2="370" y2="28"/><line x1="40" y1="44" x2="40" y2="140"/><line x1="34" y1="44" x2="46" y2="44"/><line x1="34" y1="140" x2="46" y2="140"/></g>
+          <text x="220" y="16" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" fill="var(--sub)">42 mm</text>
+          <text transform="rotate(-90 26 92)" x="26" y="92" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" fill="var(--sub)">21 mm</text>
+          <rect x="70" y="44" width="300" height="96" rx="38" fill="#16191D" stroke="#3A424D" stroke-width="2"/>
+          <rect x="84" y="50" width="272" height="30" rx="24" fill="#232930"/>
+          <circle cx="122" cy="94" r="12" fill="none" stroke="var(--accent)" stroke-width="3"/><circle cx="122" cy="94" r="3.5" fill="var(--accent)"/>
+          <text x="156" y="100" font-family="Space Grotesk,sans-serif" font-weight="600" font-size="16" fill="#9AA3AD">SoleTrackr</text>
+          <rect x="350" y="86" width="22" height="12" rx="6" fill="#07090A"/>
+          <text x="70" y="168" font-family="Inter,sans-serif" font-size="14" fill="var(--sub)">Top, with charge light and USB-C end</text>
+          <rect x="70" y="200" width="300" height="96" rx="38" fill="#16191D" stroke="#3A424D" stroke-width="2"/>
+          <rect x="84" y="206" width="272" height="30" rx="24" fill="#232930"/>
+          <circle cx="170" cy="250" r="20" fill="#0B0D10" stroke="#3A4147" stroke-width="2"/>
+          <circle cx="158" cy="250" r="4.5" fill="#35D07F"/><circle cx="182" cy="250" r="4.5" fill="#35D07F"/><circle cx="170" cy="250" r="3.5" fill="#8FA3B3"/>
+          <rect x="262" y="232" width="12" height="36" rx="4" fill="#D4B36A"/><rect x="282" y="232" width="12" height="36" rx="4" fill="#D4B36A"/><rect x="302" y="232" width="12" height="36" rx="4" fill="#D4B36A"/>
+          <text x="70" y="324" font-family="Inter,sans-serif" font-size="14" fill="var(--sub)">Skin side, with heart-rate window and insole contacts</text>
+        </svg>
+      </div>
+      <div class="card">
+        <h3 style="font-size:26px;letter-spacing:-.025em;margin-bottom:14px">Inside the pod</h3>
+        <dl class="spec">
+          <dt>Size</dt><dd>42 × 21 × 6.5 mm</dd>
+          <dt>Weight</dt><dd>9 g</dd>
+          <dt>Sensors</dt><dd>Pressure, 6-axis motion, optical heart rate</dd>
+          <dt>Battery</dt><dd>Up to 12 days</dd>
+          <dt>Charging</dt><dd>USB-C, about 2 hours</dd>
+          <dt>Radio</dt><dd>Bluetooth 5.3</dd>
+          <dt>Water</dt><dd>IP67</dd>
+          <dt>Firmware</dt><dd>v2.4.1, updated in the app</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="shop">
+  <div class="wrap sec">
+    <div class="sec-head">
+      <h2>Choose your pair.</h2>
+      <p>Each pair is a left and right insole, two pods and a charging cable. The app is free.</p>
+    </div>
+    <div class="shop">
+      <div class="card preview">
+        <svg id="shopSvg" viewBox="0 0 240 560" role="img" aria-label="Pressure zones of the selected insole"></svg>
+        <div class="cap"><b id="pvName">Run</b><span id="pvSens">8 pressure zones</span></div>
+      </div>
+      <div>
+        <div class="field">
+          <div class="lab"><b>Model</b><span>Prices in USD</span></div>
+          <fieldset class="models" id="models"><legend style="position:absolute;left:-9999px">Model</legend></fieldset>
+        </div>
+        <div class="field">
+          <div class="lab"><b>Shoe size</b><span>US</span></div>
+          <fieldset class="sizes" id="sizes"><legend style="position:absolute;left:-9999px">Shoe size</legend></fieldset>
+          <p class="sub" style="font-size:13px;margin-top:10px">Between sizes? Take the larger one and trim along the printed line. You can set your size in the app too.</p>
+        </div>
+        <div class="buyrow">
+          <div class="qty" role="group" aria-label="Quantity"><button type="button" id="qMinus" aria-label="Fewer">−</button><output id="qVal" aria-live="polite">1</output><button type="button" id="qPlus" aria-label="More">+</button></div>
+          <button class="btn" id="addBtn" type="button">Add to cart · <span id="addPrice">$149.99</span></button>
+        </div>
+        <ul class="incl"><li>Left and right insole</li><li>Two pods, USB-C cable</li><li>30-day returns</li><li>Ships in 2 business days</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap sec">
+    <div class="sec-head"><h2>Out of the box in five minutes.</h2></div>
+    <div class="steps">
+      <div class="card"><b>Trim and slide in</b><span>Cut along the line for your size, then lay each insole under the liner of your shoe.</span></div>
+      <div class="card"><b>Clip in the pods</b><span>Each pod snaps into the arch. Open the app and it finds both sides on its own.</span></div>
+      <div class="card"><b>Go for a walk</b><span>Come back to Today and Gait to see how your weight moved.</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap sec">
+    <div class="sec-head"><h2>Good questions.</h2></div>
+    <div class="faq">
+      <details><summary>Will they fit my shoes?</summary><p>They fit most trainers, walking shoes and boots that have a removable liner. Trace the liner, trim along the printed line for your size and slide them in under it.</p></details>
+      <details><summary>Do I need my phone with me?</summary><p>No. The pods keep up to a day of steps and sync the next time the app is open nearby.</p></details>
+      <details><summary>Can I use it with my watch?</summary><p>Yes. SoleTrackr tracks on its own and does not need a watch, but the two do not get in each other's way.</p></details>
+      <details><summary>Is this a medical device?</summary><p>No. SoleTrackr shows how you load your feet and does not diagnose anything. If you have pain, see a podiatrist. The Pro export is made to share with one.</p></details>
+      <details><summary>Can I wear them in the rain?</summary><p>Yes. The pods are rated IP67, so sweat, puddles and a quick splash are fine. Please do not swim in them.</p></details>
+      <details><summary>What if they do not suit me?</summary><p>Send them back within 30 days for a full refund. Trimmed pairs are fine.</p></details>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>This is a demo store for the SoleTrackr app design. No payment is taken, no orders are real and nothing ships.</p>
+    <p>All figures and readings are sample data.</p>
+  </div>
+</footer>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Cart" hidden>
+  <div class="dr-head"><h3 id="drTitle">Cart</h3><button class="iconbtn" id="closeCart" aria-label="Close cart">✕</button></div>
+  <div class="dr-body" id="drBody"></div>
+  <div class="dr-foot" id="drFoot"></div>
+</aside>
+
+<script>
+(function(){
+  var D='M120 10C170 10 205 45 208 110C211 165 190 215 178 270C170 320 172 380 170 430C168 500 150 545 112 548C72 551 56 505 60 440C62 385 78 335 68 280C56 220 22 170 22 105C22 45 65 10 120 10Z';
+  var FOOT='M44 4C66 2 82 20 81 46C80 68 64 84 58 106C54 124 62 150 64 172C65 190 52 198 40 197C28 196 20 186 21 170C22 150 16 130 11 108C6 86 6 70 8 52C10 26 24 6 44 4Z';
+  function $(id){return document.getElementById(id)}
+  function q(sel,root){return (root||document).querySelector(sel)}
+  function qa(sel,root){return Array.prototype.slice.call((root||document).querySelectorAll(sel))}
+  function money(n){return '$'+n.toFixed(2)}
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- themes (the app's six) ---------- */
+  var THEMES=[
+    {k:'lime',name:'Lime',bg:'#0e1013',card:'#171a1f',accent:'#c6f432'},
+    {k:'midnight',name:'Midnight',bg:'#0b1220',card:'#131c2e',accent:'#8eb8ff'},
+    {k:'sunset',name:'Sunset',bg:'#17110e',card:'#221914',accent:'#ffb84d'},
+    {k:'light',name:'Daylight',bg:'#f6f7f9',card:'#ffffff',accent:'#1e7b34'},
+    {k:'forest',name:'Forest',bg:'#0c140f',card:'#142019',accent:'#7ee08a'},
+    {k:'violet',name:'Violet',bg:'#0f0b18',card:'#191326',accent:'#c9a7ff'}
+  ];
+  var themeKey='lime';
+  $('themes').insertAdjacentHTML('beforeend',THEMES.map(function(t){
+    return '<button type="button" data-t="'+t.k+'" aria-label="'+t.name+' theme" aria-pressed="'+(t.k===themeKey)+'" style="background:'+t.bg+'"><i style="background:'+t.accent+'"></i><b style="background:'+t.card+'"></b></button>';
+  }).join(''));
+  $('themes').addEventListener('click',function(e){
+    var b=e.target.closest('button[data-t]'); if(!b)return;
+    themeKey=b.getAttribute('data-t');
+    document.documentElement.className='th-'+themeKey;
+    qa('#themes button').forEach(function(x){x.setAttribute('aria-pressed',String(x===b))});
+    renderGait();
+  });
+
+  /* ---------- app state, from the app's own modes and surfaces ---------- */
+  var MODES={
+    rest:{name:'Resting',hr:66,cad:0,surface:'Indoors',gc:0,strike:'-',pron:'-',bal:50,L:[40,15,45],R:[40,15,45],insight:'You are standing still, so weight is spread evenly across both feet. Start walking or running to see your gait.'},
+    walk:{name:'Walking',hr:104,cad:112,surface:'Pavement',gc:318,strike:'Heel',pron:'Neutral',bal:51,L:[36,14,50],R:[34,15,51],insight:'You roll smoothly from heel to toe. Your left side carries about 2% more load than your right, which is well within a healthy range.'},
+    run:{name:'Running',hr:158,cad:168,surface:'Trail',gc:232,strike:'Midfoot',pron:'Neutral',bal:52,L:[30,14,56],R:[28,16,56],insight:'Strong midfoot landing. Your left heel takes slightly more load as you tire, and a shorter stride can help even that out.'}
+  };
+  var SURF={
+    road:{name:'Road',dh:0,dm:0,df:0,gcMul:1,cadMul:1,balD:0,note:'On firm road your foot lands and rolls through predictably.',dot:null},
+    grass:{name:'Grass',dh:-6,dm:4,df:2,gcMul:1.08,cadMul:.98,balD:0,note:'On soft grass your heel takes less impact and your foot stays down a little longer.',dot:'#5DBB7A'},
+    trail:{name:'Trail',dh:-4,dm:6,df:-2,gcMul:1.04,cadMul:.94,balD:1,pron:'Slightly outward',note:'On uneven trail your midfoot works harder to stabilise, so load shifts to the outer edge and your left side takes a little more.',dot:'#C28A5C'}
+  };
+  var S={mode:'walk',surf:'road',tab:'today'};
+  function gait(){
+    var M=MODES[S.mode], live=S.mode!=='rest', F=live?SURF[S.surf]:SURF.road;
+    function adj(P){return live?[P[0]+F.dh,P[1]+F.dm,P[2]+F.df]:P}
+    return {L:adj(M.L),R:adj(M.R),bal:live?Math.min(56,M.bal+F.balD):M.bal,strike:M.strike,pron:live?(F.pron||M.pron):M.pron,
+      gc:M.gc?Math.round(M.gc*(live?F.gcMul:1)):0,cad:M.cad?Math.round(M.cad*(live?F.cadMul:1)):0,
+      insight:live?M.insight+' '+F.note:M.insight,live:live,F:F,M:M};
+  }
+  var STOPS=[null,[46,106,142],[47,163,154],[232,211,74],[255,154,61],[255,90,74]];
+  function zero(){
+    var h=getComputedStyle(document.documentElement).getPropertyValue('--zero').trim().replace('#','');
+    if(h.length===3)h=h.split('').map(function(c){return c+c}).join('');
+    return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)];
+  }
+  function ramp(t){
+    var st=STOPS.slice(); st[0]=zero();
+    t=Math.max(0,Math.min(1,t))*(st.length-1);
+    var i=Math.min(st.length-2,Math.floor(t)),f=t-i,a=st[i],b=st[i+1];
+    return 'rgb('+Math.round(a[0]+(b[0]-a[0])*f)+','+Math.round(a[1]+(b[1]-a[1])*f)+','+Math.round(a[2]+(b[2]-a[2])*f)+')';
+  }
+  function regions(P,j){
+    var h=P[0]/46+j, m=P[1]/40+j*.5, f=P[2]/58;
+    return [ramp(h),ramp(m),ramp(f*1.08+j),ramp(f*.92+j),ramp(P[2]/105+j)];
+  }
+
+  /* foot maps */
+  function footG(tf,id){
+    var s='';
+    ['H','M','BM','BL','T'].forEach(function(k,i){
+      var r=[[-30,140,150,90],[-30,96,150,44],[46,34,74,62],[-30,34,76,62],[-30,-30,150,64]][i];
+      s+='<rect class="fr" id="'+id+k+'" x="'+r[0]+'" y="'+r[1]+'" width="'+r[2]+'" height="'+r[3]+'" fill="#262d36"/>';
+    });
+    return '<g transform="'+tf+'"><path d="'+FOOT+'" fill="var(--foot)" stroke="var(--footline)" stroke-width="1.5"/><g clip-path="url(#stFoot)"><g filter="url(#stBlur)">'+s+'</g><path d="'+FOOT+'" fill="none" stroke="var(--footline)" stroke-width="3"/></g></g>';
+  }
+  $('feet').innerHTML='<svg viewBox="0 0 326 236" role="img" aria-label="Live pressure map of both feet, colour-coded from light to heavy pressure" style="display:block;width:100%;height:auto;margin-top:6px">'+footG('translate(32 8) scale(1.1)','l')+footG('translate(294 8) scale(-1.1 1.1)','r')+'</svg>';
+
+  var jit=0;
+  function renderGait(){
+    var g=gait(), f=function(id,c){var e=$(id);if(e)e.style.fill=c};
+    ['l','r'].forEach(function(s){
+      var c=regions(s==='l'?g.L:g.R,jit);
+      ['H','M','BM','BL','T'].forEach(function(k,i){f(s+k,c[i])});
+    });
+    var P=function(k,v){var e=q('[data-p="'+k+'"]');if(e)e.textContent=v+'%'};
+    P('lh',g.L[0]);P('lm',g.L[1]);P('lf',g.L[2]);P('rh',g.R[0]);P('rm',g.R[1]);P('rf',g.R[2]);
+    q('[data-bl]').textContent=g.bal; q('[data-br]').textContent=100-g.bal;
+    var G=function(k,v){q('[data-g="'+k+'"]').textContent=v};
+    G('strike',g.strike);G('pron',g.pron);G('contact',g.gc?g.gc+' ms':'-');G('cad',g.cad?g.cad+' spm':'-');G('insight',g.insight);
+    q('[data-gsub]').textContent=g.live?(MODES[S.mode].name+' on '+g.F.name.toLowerCase()):'Standing still';
+    q('[data-tstatus]').textContent=g.live?'Detecting live':'Paused';
+    q('[data-tnote]').textContent=g.live?g.F.note:'You are standing still. Tap a surface to start walking on it and see how it changes your gait.';
+  }
+  function renderControls(){
+    var html=['rest','walk','run'].map(function(k){return '<button type="button" data-m="'+k+'" aria-pressed="'+(S.mode===k)+'">'+MODES[k].name+'</button>'}).join('');
+    qa('[data-modes]').forEach(function(el){el.innerHTML=html});
+    qa('[data-surfs]').forEach(function(el){
+      el.innerHTML=['road','grass','trail'].map(function(k){var d=SURF[k].dot||'var(--accent)';return '<button type="button" data-sf="'+k+'" aria-pressed="'+(S.surf===k&&S.mode!=='rest')+'"><span style="width:8px;height:8px;border-radius:4px;background:'+d+';flex:none"></span>'+SURF[k].name+'</button>'}).join('');
+    });
+    var M=MODES[S.mode];
+    qa('[data-hr]').forEach(function(e){e.textContent=M.hr});
+    q('[data-mname]').textContent=M.name;
+    q('[data-msurf]').textContent=S.mode==='rest'?M.surface:SURF[S.surf].name;
+  }
+  function renderAll(){renderControls();renderGait()}
+  document.addEventListener('click',function(e){
+    var m=e.target.closest('[data-m]'),s=e.target.closest('[data-sf]');
+    if(m&&m.closest('.ph')){S.mode=m.getAttribute('data-m');renderAll()}
+    else if(s&&s.closest('.ph')){S.surf=s.getAttribute('data-sf');if(S.mode==='rest')S.mode='walk';renderAll()}
+  });
+
+  /* tabs */
+  var TABS=[
+    ['today','Today','<path d="M3.5 11.2 12 4l8.5 7.2V19a1.5 1.5 0 0 1-1.5 1.5h-3.5v-5.5h-7v5.5H5A1.5 1.5 0 0 1 3.5 19z"/>'],
+    ['activity','Activity','<path d="M3 12h4l2.5-6 4 12 2.5-6H21"/>'],
+    ['gait','Gait','<path d="M9.5 3.5c2.6-.6 4.6 1.2 4.6 4 0 2.2-1.6 3.6-1.8 5.5-.2 1.8.6 3.4.2 5-.3 1.4-1.5 2.4-3 2.4s-2.6-1-2.7-2.6c-.1-1.8.6-3 .2-4.9C6.4 10.5 5.6 9 6 7c.4-2 1.9-3.1 3.5-3.5z"/>'],
+    ['insoles','Insoles','<circle cx="12" cy="12" r="3"/><path d="M6.3 6.3a8 8 0 0 0 0 11.4M17.7 6.3a8 8 0 0 1 0 11.4"/>']
+  ];
+  function renderTabs(){
+    $('tabs').innerHTML=TABS.map(function(t){return '<button type="button" data-tab="'+t[0]+'" aria-current="'+(S.tab===t[0])+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+t[2]+'</svg><span>'+t[1]+'</span></button>'}).join('');
+    qa('.ph .sc').forEach(function(el){el.hidden=el.getAttribute('data-s')!==S.tab});
+  }
+  $('tabs').addEventListener('click',function(e){var b=e.target.closest('[data-tab]');if(b){S.tab=b.getAttribute('data-tab');renderTabs()}});
+  renderTabs(); renderAll();
+  if(!reduce){setInterval(function(){jit=(Math.random()-.5)*.1;renderGait()},1800)}
+
+  /* ---------- shop ---------- */
+  var SENS=[
+    {x:82,y:52,l:.45,r:52},{x:80,y:128,l:.9,r:66},{x:160,y:140,l:.55,r:56},{x:119,y:118,l:.7,r:60},{x:150,y:290,l:.3,r:48},
+    {x:98,y:458,l:.8,r:64},{x:140,y:458,l:.85,r:64},{x:119,y:508,l:.95,r:66},{x:134,y:62,l:.3,r:44},{x:119,y:196,l:.35,r:50},
+    {x:104,y:380,l:.15,r:44},{x:119,y:410,l:.4,r:52}
+  ];
+  var MODELS={
+    core:{name:'Core',price:106.99,idx:[0,1,2,4,5,6],desc:'Pressure map, steps and cadence for everyday walking.',tags:['6 zones','Motion','12 days']},
+    run:{name:'Run',price:149.99,idx:[0,1,2,3,4,5,6,7],desc:'Adds heart rate and terrain detection for training.',tags:['8 zones','Heart rate','Terrain','10 days']},
+    pro:{name:'Pro',price:249.99,idx:[0,1,2,3,4,5,6,7,8,9,10,11],desc:'Twelve zones, every sensor and raw CSV data export.',tags:['12 zones','Heart rate','Terrain','CSV export','7 days']}
+  };
+  var SIZES=['6','7','8','9','10','11','12','13'];
+  var FREE_AT=150, SHIP=9.9;
+  var POD='<g transform="translate(119 332)"><rect x="-19" y="-34" width="38" height="68" rx="15" fill="#16191D" stroke="#3A424D" stroke-width="1.5"/><rect x="-15" y="-30" width="30" height="14" rx="7" fill="#232930"/><circle cx="0" cy="20" r="5" fill="none" stroke="var(--accent)" stroke-width="2"/><circle cx="0" cy="20" r="1.8" fill="var(--accent)"/></g>';
+  function insoleMap(idx,withPod){
+    var h='<path d="'+D+'" fill="var(--foot)" stroke="var(--footline)" stroke-width="1.5"/><g clip-path="url(#clipI)"><g filter="url(#heat)">';
+    idx.forEach(function(i){var s=SENS[i];h+='<circle cx="'+s.x+'" cy="'+s.y+'" r="'+s.r+'" fill="#000" opacity="'+s.l+'"/>'});
+    return h+'</g></g><path d="'+D+'" fill="none" stroke="var(--footline)" stroke-width="2"/>'+(withPod?POD:'');
+  }
+  var st={model:'run',size:'9',qty:1}, cart=[], view='cart', lastOrder=null, lastFocus=null;
+  $('models').insertAdjacentHTML('beforeend',Object.keys(MODELS).map(function(k){var o=MODELS[k];
+    return '<div class="model"><input type="radio" name="model" id="m_'+k+'" value="'+k+'"'+(k===st.model?' checked':'')+'><label for="m_'+k+'"><span class="nm">'+o.name+'</span><span class="pr">'+money(o.price)+'</span><span class="ds">'+o.desc+'</span><span class="tag">'+o.tags.map(function(t){return '<span>'+t+'</span>'}).join('')+'</span></label></div>';
+  }).join(''));
+  $('sizes').insertAdjacentHTML('beforeend',SIZES.map(function(z){return '<div class="size"><input type="radio" name="size" id="s_'+z+'" value="'+z+'"'+(z===st.size?' checked':'')+'><label for="s_'+z+'">'+z+'</label></div>'}).join(''));
+  function paintShop(){
+    var o=MODELS[st.model];
+    $('shopSvg').innerHTML=insoleMap(o.idx,true);
+    $('pvName').textContent=o.name;
+    $('pvSens').textContent=o.idx.length+' pressure zones';
+    $('qVal').textContent=st.qty;
+    $('addPrice').textContent=money(o.price*st.qty);
+  }
+  $('models').addEventListener('change',function(e){st.model=e.target.value;paintShop()});
+  $('sizes').addEventListener('change',function(e){st.size=e.target.value});
+  $('qMinus').addEventListener('click',function(){st.qty=Math.max(1,st.qty-1);paintShop()});
+  $('qPlus').addEventListener('click',function(){st.qty=Math.min(9,st.qty+1);paintShop()});
+  $('addBtn').addEventListener('click',function(){
+    var f=cart.filter(function(c){return c.model===st.model&&c.size===st.size})[0];
+    if(f)f.qty=Math.min(9,f.qty+st.qty); else cart.push({model:st.model,size:st.size,qty:st.qty});
+    view='cart'; openCart(); renderCart();
+  });
+  paintShop();
+
+  /* ---------- cart ---------- */
+  function totals(){
+    var sub=cart.reduce(function(a,c){return a+MODELS[c.model].price*c.qty},0);
+    var ship=sub===0?0:(sub>=FREE_AT?0:SHIP);
+    return {sub:sub,ship:ship,total:sub+ship,n:cart.reduce(function(a,c){return a+c.qty},0)};
+  }
+  function thumb(idx){return '<svg viewBox="0 0 240 560" aria-hidden="true">'+insoleMap(idx,false)+'</svg>'}
+  function renderCart(){
+    var t=totals(), body=$('drBody'), foot=$('drFoot');
+    $('cartN').textContent=t.n;
+    if(view==='cart'){
+      $('drTitle').textContent='Cart';
+      if(!cart.length){
+        body.innerHTML='<div class="empty"><h4>Your cart is empty</h4><p>Pick a model and a size to start.</p></div>';
+        foot.innerHTML='<button class="btn block" data-act="shop" type="button">Browse insoles</button>';
+        return;
+      }
+      var pct=Math.min(100,t.sub/FREE_AT*100);
+      var h='<div class="ship"><span>'+(t.sub>=FREE_AT?'You have free shipping.':'Add '+money(FREE_AT-t.sub)+' for free shipping.')+'</span><div class="track"><i style="width:'+pct+'%"></i></div></div>';
+      cart.forEach(function(c,i){var o=MODELS[c.model];
+        h+='<div class="line"><div class="thumb">'+thumb(o.idx)+'</div><div class="t"><b>SoleTrackr '+o.name+'</b><span>Size US '+c.size+'</span><div><span class="mini"><button type="button" data-act="dec" data-i="'+i+'" aria-label="Fewer">−</button><output>'+c.qty+'</output><button type="button" data-act="inc" data-i="'+i+'" aria-label="More">+</button></span><button class="rm" type="button" data-act="rm" data-i="'+i+'">Remove</button></div></div><div class="pp">'+money(o.price*c.qty)+'</div></div>';
+      });
+      body.innerHTML=h;
+      foot.innerHTML='<div class="sumrow"><span>Subtotal</span><span>'+money(t.sub)+'</span></div><div class="sumrow"><span>Shipping</span><span>'+(t.ship?money(t.ship):'Free')+'</span></div><div class="sumrow total"><span>Total</span><span>'+money(t.total)+'</span></div><button class="btn block" data-act="checkout" type="button">Checkout</button><p class="demo">Demo store. No payment is taken.</p>';
+    } else if(view==='checkout'){
+      $('drTitle').textContent='Checkout';
+      body.innerHTML='<form class="form" id="coForm" novalidate><label>Full name<input id="f_name" autocomplete="name" placeholder="Alex Morgan"></label><label>Email<input id="f_email" type="email" autocomplete="email" placeholder="alex@example.com"></label><label>Street address<input id="f_addr" autocomplete="street-address" placeholder="12 Example Street"></label><div class="two"><label>City<input id="f_city" placeholder="Melbourne"></label><label>Postcode<input id="f_pc" inputmode="numeric" placeholder="3000"></label></div><label>Country<select id="f_cty"><option>Australia</option><option>New Zealand</option><option>United States</option><option>United Kingdom</option><option>Canada</option></select></label><p class="demo" id="coErr" role="alert" style="color:var(--accent);text-align:left;min-height:1em"></p></form>';
+      foot.innerHTML='<div class="sumrow total"><span>Total ('+t.n+' pair'+(t.n>1?'s':'')+')</span><span>'+money(t.total)+'</span></div><button class="btn block" data-act="place" type="button">Place demo order</button><button class="btn soft block" data-act="back" type="button">Back to cart</button><p class="demo">Demo store. No payment is taken and nothing ships.</p>';
+    } else {
+      $('drTitle').textContent='Order placed';
+      var o2=lastOrder, h2='<div class="done"><h4>Thanks, '+o2.first+'.</h4><span class="ord">'+o2.no+'</span><p class="sub" style="margin-bottom:18px">A confirmation would go to '+o2.email+'. Estimated delivery is 3–5 business days.</p><ul>';
+      o2.items.forEach(function(it){h2+='<li><span>'+it.q+' × SoleTrackr '+it.name+' (US '+it.size+')</span><span>'+money(it.p)+'</span></li>'});
+      h2+='<li><span>Shipping</span><span>'+(o2.ship?money(o2.ship):'Free')+'</span></li><li><b>Total</b><b>'+money(o2.total)+'</b></li></ul><p class="demo" style="text-align:left">This was a demo. No payment was taken and nothing will ship.</p></div>';
+      body.innerHTML=h2;
+      foot.innerHTML='<button class="btn block" data-act="shop" type="button">Keep browsing</button>';
+    }
+  }
+  function openCart(){
+    lastFocus=document.activeElement;
+    $('scrim').hidden=false;$('drawer').hidden=false;document.body.classList.add('lock');
+    $('closeCart').focus();
+  }
+  function closeCart(){
+    $('scrim').hidden=true;$('drawer').hidden=true;document.body.classList.remove('lock');
+    if(view==='done'){view='cart';renderCart()}
+    if(lastFocus&&lastFocus.focus)lastFocus.focus();
+  }
+  $('openCart').addEventListener('click',function(){if(view!=='done')view='cart';renderCart();openCart()});
+  $('closeCart').addEventListener('click',closeCart);
+  $('scrim').addEventListener('click',closeCart);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('drawer').hidden)closeCart()});
+  $('drawer').addEventListener('click',function(e){
+    var b=e.target.closest('[data-act]'); if(!b)return;
+    var a=b.getAttribute('data-act'), i=+b.getAttribute('data-i');
+    if(a==='inc'){cart[i].qty=Math.min(9,cart[i].qty+1)}
+    else if(a==='dec'){cart[i].qty=Math.max(1,cart[i].qty-1)}
+    else if(a==='rm'){cart.splice(i,1)}
+    else if(a==='checkout'){view='checkout'}
+    else if(a==='back'){view='cart'}
+    else if(a==='shop'){closeCart();var s=$('shop');if(s)s.scrollIntoView();return}
+    else if(a==='place'){
+      var err=$('coErr'), ok=true;
+      ['f_name','f_email','f_addr','f_city','f_pc'].forEach(function(id){
+        var el=$(id), v=el.value.trim(), bad=!v||(id==='f_email'&&!/^\S+@\S+\.\S+$/.test(v));
+        el.setAttribute('aria-invalid',bad?'true':'false'); el.style.borderColor=bad?'var(--accent)':'';
+        if(bad)ok=false;
+      });
+      if(!ok){err.textContent='Fill in the highlighted fields. The email needs an @.';return}
+      var t=totals();
+      lastOrder={no:'ST-'+(10000+Math.floor(Math.random()*89999)),first:$('f_name').value.trim().split(' ')[0],email:$('f_email').value.trim(),ship:t.ship,total:t.total,
+        items:cart.map(function(c){return {name:MODELS[c.model].name,size:c.size,q:c.qty,p:MODELS[c.model].price*c.qty}})};
+      cart=[];view='done';
+    }
+    renderCart();
+    if(a==='checkout'||a==='back'||a==='place')$('drBody').scrollTop=0;
+  });
+  renderCart();
+})();
+</script>
+
+</body>
+</html>
